@@ -1,25 +1,46 @@
-import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 public class Server extends UnicastRemoteObject implements Service {
+    private boolean is_running = false;
     private Map<String, List<String>> printerMap = new HashMap<String, List<String>>();
-    
+    private Map<String, String> config = new HashMap<String, String>();
 
-    protected Server() throws RemoteException {
-        List<String> list = new ArrayList<>();
-        list.add("hello");
-        list.add("yes");
-        list.add("123");
-        printerMap.put("printer1", list);
+    Server() throws RemoteException {
+        for (int i = 1; i <= 10; i++) {
+            printerMap.put("printer" + i, new ArrayList<>());
+        }
+    }
+
+    public static void main(String[] args) throws RemoteException {
+        try {
+            Server server = new Server();
+            server.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void print(String filename, String printer) throws RemoteException {
+        
+        if (printerMap.containsKey(printer)) {
+            printerMap.get(printer).add(filename);
+        } else {
+            throw new IllegalArgumentException("Printer: " + printer + " is not a printer on the server.");
+        }
+    }
+
+    @Override
+    public String queue(String printer) {
+        String result = queueToString(printer);
+        return result;
     }
 
     private String queueToString(String printer){
@@ -31,46 +52,69 @@ public class Server extends UnicastRemoteObject implements Service {
         return result;
     }
     
-    public static void main(String[] args) {
+    @Override
+    public void topQueue(String printer, int job) throws IllegalArgumentException {
+        String file = printerMap.get(printer).remove(job);
+        printerMap.get(printer).add(0, file);
+    }
+    
+    @Override
+    public void start() {
+        is_running = true;
         try {
-            Service server = new Server();
             Registry registry = LocateRegistry.createRegistry(5099);
-            registry.rebind("Server", server);
-            
+            registry.rebind("Server", this);
             System.out.println("server running");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+    /*
     @Override
-    public void print(String filename, String printer) throws RemoteException {
-        try {
-        File file = new File("file.txt");
-        Scanner scanner = new Scanner(file);
-        while (scanner.hasNextLine()) {
-            System.out.println(scanner.nextLine());
+    public void stop() {
+        is_running = false;
+
+        for (String printer : printerMap.keySet()) {
+            printerMap.get(printer).clear();
         }
-        
-        System.out.println("printer: " + printer);
-        scanner.close();
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + e.getMessage());
-        }    
+        try {
+            UnicastRemoteObject.unexportObject(this, true); 
+            System.exit(0);
+        } catch(Exception e) {
+            System.out.println("Error in stopping server: " + e.getMessage());
+        }
     }
+    
     @Override
-    public String queue(String printer) {
-        // System.out.println("printer: " + printer);
-        String result = queueToString(printer);
-        System.out.println(result);
-        return result;
+    public void restart() {
+        stop();
+        start();
     }
 
-   /*
     @Override
-    public void topQueue(String printer, int job) {
-        String file = printerMap.get(printer).remove(job);
-        printerMap.get(printer).add(0, file);
+    public String status(String printer) {
+        String output = "";
+        if (is_running) {
+            output += "Server is running\n";
+        } else {
+            output += "Server has stopped running\n";
+        }
+        output += "The printer" + printer + "has a queue size of " + printerMap.get(printer).size();
+        return output;
+    }   
+
+
+    @Override
+    public String readConfig(String parameter) {
+        if (!config.containsKey(parameter)) {
+            return "Parameter: " + parameter + " does not exist";
+        }
+        return config.get(parameter);
     }
+    
+    @Override
+    public void setConfig(String parameter, String value) {
+        config.put(parameter, value);
+    }   
     */
 }
