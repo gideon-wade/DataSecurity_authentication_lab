@@ -10,7 +10,7 @@ import java.util.Map;
 public class Server extends UnicastRemoteObject implements Service {
     private boolean is_running = false;
     private Map<String, List<String>> printerMap = new HashMap<String, List<String>>();
-    private Map<String, String> config = new HashMap<String, String>();
+    private ServerConfig config = new ServerConfig();
 
     Server() throws RemoteException {
         for (int i = 1; i <= 10; i++) {
@@ -69,7 +69,7 @@ public class Server extends UnicastRemoteObject implements Service {
             e.printStackTrace();
         }
     }
-    /*
+
     @Override
     public void stop() {
         is_running = false;
@@ -103,18 +103,13 @@ public class Server extends UnicastRemoteObject implements Service {
         return output;
     }   
 
-
     @Override
     public String readConfig(String parameter) {
-        if (!config.containsKey(parameter)) {
-            return "Parameter: " + parameter + " does not exist";
-        }
-        return config.get(parameter);
+        return config.getConfig(parameter);
     }
     
     @Override
     public void setConfig(String parameter, String value) {
-        config.put(parameter, value);
+        config.setConfig(parameter, value);
     }   
-    */
 }

@@ -12,7 +12,7 @@ public class Client {
             Service Server = (Service) registry.lookup("Server");
             try {
                 System.out.println("----- PRINT OPERATION -----");
-                Server.print("file.txt", "test");
+                Server.print("file.txt", "printer1");
                 System.out.println("----- QUEUE OPERATION -----");
                 String queue = Server.queue("printer1");
                 System.out.println(queue);
