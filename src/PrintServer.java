@@ -7,21 +7,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Server extends UnicastRemoteObject implements Service {
-    private boolean is_running = false;
-    private Map<String, List<String>> printerMap = new HashMap<String, List<String>>();
-    private ServerConfig config = new ServerConfig();
+import DB.DBInterface;
 
-    Server() throws RemoteException {
+public class PrintServer extends UnicastRemoteObject implements Service {
+    private boolean is_running = false;
+    private Map<String, List<String>> queues = new HashMap<String, List<String>>();
+    private ServerConfig config = new ServerConfig();
+    private DBInterface database; 
+    private AuthenticationService authenticationService = new AuthenticationService();
+
+    PrintServer() throws RemoteException {
         for (int i = 1; i <= 10; i++) {
-            printerMap.put("printer" + i, new ArrayList<>());
+            queues.put("printer" + i, new ArrayList<>());
         }
     }
 
     public static void main(String[] args) throws RemoteException {
         try {
-            Server server = new Server();
+            PrintServer server = new PrintServer();
             server.start();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -30,32 +35,22 @@ public class Server extends UnicastRemoteObject implements Service {
     @Override
     public void print(String filename, String printer) throws RemoteException {
         
-        if (printerMap.containsKey(printer)) {
-            printerMap.get(printer).add(filename);
+        if (queues.containsKey(printer)) {
+            queues.get(printer).add(filename);
         } else {
             throw new IllegalArgumentException("Printer: " + printer + " is not a printer on the server.");
         }
     }
 
     @Override
-    public String queue(String printer) {
-        String result = queueToString(printer);
-        return result;
-    }
-
-    private String queueToString(String printer){
-        List<String> list = printerMap.get(printer);
-        String result = "printer queue: \n";
-        for (int i = 0; i < list.size(); i++) {
-            result += i + " " + list.get(i) + "\n";
-        }
-        return result;
+    public List<String> queue(String printer) {
+        return queues.get(printer);
     }
     
     @Override
     public void topQueue(String printer, int job) throws IllegalArgumentException {
-        String file = printerMap.get(printer).remove(job);
-        printerMap.get(printer).add(0, file);
+        String file = queues.get(printer).remove(job);
+        queues.get(printer).add(0, file);
     }
     
     @Override
@@ -63,8 +58,9 @@ public class Server extends UnicastRemoteObject implements Service {
         is_running = true;
         try {
             Registry registry = LocateRegistry.createRegistry(5099);
-            registry.rebind("Server", this);
+            registry.rebind("PrintServer", this);
             System.out.println("server running");
+            this.database = new DBInterface();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,8 +70,8 @@ public class Server extends UnicastRemoteObject implements Service {
     public void stop() {
         is_running = false;
 
-        for (String printer : printerMap.keySet()) {
-            printerMap.get(printer).clear();
+        for (String printer : queues.keySet()) {
+            queues.get(printer).clear();
         }
         try {
             UnicastRemoteObject.unexportObject(this, true); 
@@ -99,7 +95,7 @@ public class Server extends UnicastRemoteObject implements Service {
         } else {
             output += "Server has stopped running\n";
         }
-        output += "The printer" + printer + "has a queue size of " + printerMap.get(printer).size();
+        output += "The printer" + printer + "has a queue size of " + queues.get(printer).size();
         return output;
     }   
 
