@@ -12,4 +12,5 @@ public interface Service extends Remote {
     public String status(String printer) throws RemoteException;  // prints status of printer on the user's display
     public String readConfig(String parameter) throws RemoteException;   // prints the value of the parameter on the print server to the user's display
     public void setConfig(String parameter, String value)throws RemoteException;   // sets the parameter on the print server to value
+    public String login(String username, byte[] hashedPassword) throws RemoteException;
 }

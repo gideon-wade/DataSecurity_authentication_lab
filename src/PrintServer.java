@@ -6,16 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import DB.DBInterface;
+
+import Database.DB;
+
 
 public class PrintServer extends UnicastRemoteObject implements Service {
     private boolean is_running = false;
     private Map<String, List<String>> queues = new HashMap<String, List<String>>();
     private ServerConfig config = new ServerConfig();
-    private DBInterface database; 
     private AuthenticationService authenticationService = new AuthenticationService();
+    private DB database = new DB();
 
-    PrintServer() throws RemoteException {
+    public PrintServer() throws RemoteException {
         for (int i = 1; i <= 10; i++) {
             queues.put("printer" + i, new ArrayList<>());
         }
@@ -42,7 +44,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }
 
     @Override
-    public List<String> queue(String printer) {
+    public List<String> queue(String printer) throws RemoteException{
         return queues.get(printer);
     }
     
@@ -53,20 +55,19 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }
     
     @Override
-    public void start() {
+    public void start()throws RemoteException {
         is_running = true;
         try {
             Registry registry = LocateRegistry.createRegistry(5099);
             registry.rebind("PrintServer", this);
             System.out.println("server running");
-            this.database = new DBInterface();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void stop() {
+    public void stop() throws RemoteException{
         is_running = false;
 
         for (String printer : queues.keySet()) {
@@ -81,13 +82,13 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }
     
     @Override
-    public void restart() {
+    public void restart() throws RemoteException{
         stop();
         start();
     }
 
     @Override
-    public String status(String printer) {
+    public String status(String printer) throws RemoteException{
         String output = "";
         if (is_running) {
             output += "Server is running\n";
@@ -99,12 +100,21 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }   
 
     @Override
-    public String readConfig(String parameter) {
+    public String readConfig(String parameter)throws RemoteException {
         return config.getConfig(parameter);
     }
     
     @Override
-    public void setConfig(String parameter, String value) {
+    public void setConfig(String parameter, String value) throws RemoteException{
         config.setConfig(parameter, value);
-    }   
+    }
+    @Override
+    public String login(String username, byte[] hashedPassword) throws RemoteException{
+        if (database.validateLogin(username, hashedPassword)) {
+            String token = "CoolToken";
+            return token;
+        } else {
+            return "Error with login";
+        }
+    }
 }
