@@ -17,7 +17,7 @@ public class Client {
                 String password = "1234";
                 
                 String token = Server.login(username, hashPW(password));
-
+                
                 System.out.println("----- PRINT OPERATION -----");
                 Server.print("file.txt", "printer1", token);
                 System.out.println("----- QUEUE OPERATION -----");

@@ -5,16 +5,34 @@ import java.util.Map;
 
 
 public class AuthenticationService {
-
               //Subject     Object  Permissions
+              //User        File    Permissions
     private Map<String, Map<String, List<String>>> ACL; 
         
     public AuthenticationService() {
         ACL = new HashMap<String, Map<String, List<String>>>();
+        Map serverObjects = new HashMap<String, List<String>>();
+        List<String> serverPermissions = List.of("read", "write", "delete", "execute");
+
+        serverObjects.put("start", serverPermissions);
+        serverObjects.put("stop", serverPermissions);
+        serverObjects.put("config", serverPermissions);
+        
+        ACL.put("admin", serverObjects);
+
+        Map johnSmithObjects = new HashMap<String, List<String>>();
+        List<String> johnSmithPermissions = List.of("read");
+        johnSmithObjects.put("config", johnSmithPermissions);
+        ACL.put("John Smith", johnSmithObjects);
+
     }
     
     public boolean authenticate(String user, String object, String permission) {
-        return getPermissions(user, object).contains(permission);
+        List<String> permissions = getPermissions(user, object);
+        if (permissions != null) {
+            return permissions.contains(permission);
+        }
+        return false;
     }
     
     public void setPermission(String user, String object, String permission) {
@@ -22,15 +40,22 @@ public class AuthenticationService {
     }
     
     public List<String> getPermissions(String user, String object) {
-        return getObjects(user).get(object);
+        Map<String, List<String>> objects = getObjects(user);
+        if (objects != null) {
+            return objects.get(object);
+        }
+        return null;
     }
 
     public void setObject(String user, String object) {
-        if (!getObjects(user).containsKey(object)) getObjects(user).put(object, new ArrayList<>());
+        if (!getObjects(user).containsKey(object)) getObjects(user).put(object, new ArrayList<String>());
     }
 
     public Map<String, List<String>> getObjects(String user) {
-        return ACL.get(user);
+        if (ACL.containsKey(user)) {
+            return ACL.get(user);
+        }
+        return null;
     }
 
     public String getObjectsToString(String user) {
