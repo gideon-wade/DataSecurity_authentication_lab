@@ -147,6 +147,6 @@ public class PrintServer extends UnicastRemoteObject implements Service {
             userTokens.remove(token);
             return "You have logged out";
         }
-        return "You have not logged in yet (╯°□°）╯︵ ┻━┻��🥶🥵🥵🥶🥶😨";
+        return "You have not logged in yet";
     }
 }

@@ -1,1 +1,3 @@
-javac src/*.java
+cd src
+javac *.java
+cd ..
