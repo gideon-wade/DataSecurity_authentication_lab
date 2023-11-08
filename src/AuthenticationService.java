@@ -9,8 +9,8 @@ public class AuthenticationService {
               //User        File    Permissions
     private Map<String, Map<String, List<String>>> ACL; 
         
-    public AuthenticationService() {
-        ACL = new HashMap<String, Map<String, List<String>>>();
+    public AuthenticationService() {       
+        this.ACL = new HashMap<String, Map<String, List<String>>>();
         Map serverObjects = new HashMap<String, List<String>>();
         List<String> serverPermissions = List.of("read", "write", "delete", "execute");
 
@@ -18,15 +18,108 @@ public class AuthenticationService {
         serverObjects.put("stop", serverPermissions);
         serverObjects.put("config", serverPermissions);
         
-        ACL.put("admin", serverObjects);
+        this.ACL.put("admin", serverObjects);
 
         Map johnSmithObjects = new HashMap<String, List<String>>();
         List<String> johnSmithPermissions = List.of("read");
         johnSmithObjects.put("config", johnSmithPermissions);
-        ACL.put("John Smith", johnSmithObjects);
+        this.ACL.put("John Smith", johnSmithObjects);
+        
+        setPermissionsAlice();
+        setPermissionsBob();
+        setPermissionsCecilia();
+        setPermissionDavid();
+        setPermissionErica();
+        setPermissionFred();
+        setPermissionGeorge();
 
     }
     
+    private void setPermissionsAlice() {
+        Map aliceObjects = new HashMap<String, List<String>>();
+        List<String> alicePermissions = List.of("read", "write", "delete", "execute");
+        aliceObjects.put("print" , alicePermissions);
+        aliceObjects.put("queue", alicePermissions);
+        aliceObjects.put("topQueue", alicePermissions);
+        aliceObjects.put("start", alicePermissions);
+        aliceObjects.put("stop", alicePermissions);
+        System.out.println("config");
+        aliceObjects.put("config", alicePermissions);
+        System.out.println("config");
+        aliceObjects.put("restart", alicePermissions);
+        aliceObjects.put("status", alicePermissions);
+        aliceObjects.put("readConfig", alicePermissions);
+        aliceObjects.put("setConfig", alicePermissions);
+        aliceObjects.put("login", alicePermissions);
+        aliceObjects.put("logout", alicePermissions);
+
+        this.ACL.put("alice", aliceObjects);
+        
+    }
+
+    private void setPermissionsBob() {
+        Map bobObjects = new HashMap<String, List<String>>();
+        List<String> bobPermissions = List.of("read", "write", "delete", "execute");
+        bobObjects.put("start" , bobPermissions);
+        bobObjects.put("stop", bobPermissions);
+        bobObjects.put("restart", bobPermissions);
+        bobObjects.put("status", bobPermissions);
+        bobObjects.put("readConfig", bobPermissions);
+        bobObjects.put("setConfig", bobPermissions);
+
+        this.ACL.put("bob", bobObjects);
+    }
+
+    private void setPermissionsCecilia() {
+        Map ceciliaObjects = new HashMap<String, List<String>>();
+        List<String> ceciliaPermissions = List.of("read", "write", "delete", "execute");
+        ceciliaObjects.put("queue" , ceciliaPermissions);
+        ceciliaObjects.put("topQueue", ceciliaPermissions);
+        ceciliaObjects.put("restart", ceciliaPermissions);
+
+        this.ACL.put("cecilia", ceciliaObjects);
+    }
+
+    private void setPermissionDavid() {
+        Map davidObjects = new HashMap<String, List<String>>();
+        List<String> davidPermissions = List.of("read", "write", "delete", "execute");
+        davidObjects.put("print" , davidPermissions);
+        davidObjects.put("queue", davidPermissions);
+
+        this.ACL.put("david", davidObjects);
+        
+    }
+
+    private void setPermissionErica() {
+        Map ericaObjects = new HashMap<String, List<String>>();
+        List<String> ericaPermissions = List.of("read", "write", "delete", "execute");
+        ericaObjects.put("print" , ericaPermissions);
+        ericaObjects.put("queue", ericaPermissions);
+
+        this.ACL.put("erica", ericaObjects);
+        
+    }
+
+    private void setPermissionFred() {
+        Map fredObjects = new HashMap<String, List<String>>();
+        List<String> fredPermissions = List.of("read", "write", "delete", "execute");
+        fredObjects.put("print" , fredPermissions);
+        fredObjects.put("queue", fredPermissions);
+
+        this.ACL.put("fred", fredObjects);
+        
+    }
+
+    private void setPermissionGeorge() {
+        Map georgeObjects = new HashMap<String, List<String>>();
+        List<String> georgePermissions = List.of("read", "write", "delete", "execute");
+        georgeObjects.put("print" , georgePermissions);
+        georgeObjects.put("queue", georgePermissions);
+
+        this.ACL.put("george", georgeObjects);
+        
+    }
+
     public boolean authenticate(String user, String object, String permission) {
         List<String> permissions = getPermissions(user, object);
         if (permissions != null) {

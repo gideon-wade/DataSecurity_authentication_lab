@@ -110,10 +110,12 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }   
 
     @Override
-    public String readConfig(String parameter, String token)throws RemoteException {
+    public String readConfig(String parameter, String token) throws RemoteException {
         if (!userTokens.containsKey(token)) {
             return "You are not a registered user";
         }
+        System.out.println("authenticating");
+        System.out.println(!authenticationService.authenticate(userTokens.get(token), "config", "read"));
         if (!authenticationService.authenticate(userTokens.get(token), "config", "read")) {
             return "You do not have permission to read the config";
         }
@@ -154,5 +156,8 @@ public class PrintServer extends UnicastRemoteObject implements Service {
             return "You have logged out";
         }
         return "You have not logged in yet";
+    }
+    private void generateAccessControlScenario() {
+
     }
 }

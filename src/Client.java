@@ -12,6 +12,7 @@ public class Client {
             InetAddress localhost = InetAddress.getLocalHost();
             Registry registry = LocateRegistry.getRegistry(localhost.getHostAddress(), 5099);
             Service Server = (Service) registry.lookup("PrintServer");
+            /*
             try {
                 String username = "John Smith";
                 String password = "1234";
@@ -29,7 +30,32 @@ public class Client {
                 System.out.println("client success");
             } catch (RemoteException e) {
                 System.err.println("client failed: " + e.getMessage());
+            */
+
+            //registry = LocateRegistry.getRegistry(localhost.getHostAddress(), 5099);
+            //Server = (Service) registry.lookup("PrintServer");
+            try {
+                String username = "Alice";
+                String password = "alicepassword";
+                
+                String token = Server.login(username, hashPW(password));
+                System.out.println("Alice token " + token);
+                System.out.println("----- ALICE OPERATION -----");
+                Server.setConfig("Alice's awesome configuation", "42", token);
+                System.out.println(Server.readConfig("Alice's awesome configuation", token));
+
+
+                System.out.println("----- ALICE OPERATION -----");
+
+                System.out.println(Server.logout(username, token));
+                System.out.println("Alice success");
+            } catch (RemoteException e) {
+                System.err.println("client failed: " + e.getMessage());
             }
+
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,3 +71,4 @@ public class Client {
         return null;
     }
 }
+
