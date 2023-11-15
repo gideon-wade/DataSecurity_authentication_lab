@@ -114,7 +114,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
         if (!userTokens.containsKey(token)) {
             return "You are not a registered user";
         }
-        System.out.println("authenticating");
+        System.out.println("authenticating " + userTokens.get(token));
         System.out.println(!authenticationService.authenticate(userTokens.get(token), "config", "read"));
         if (!authenticationService.authenticate(userTokens.get(token), "config", "read")) {
             return "You do not have permission to read the config";
@@ -135,6 +135,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     
     @Override
     public String login(String username, byte[] hashedPassword) throws RemoteException {
+        username = username.toLowerCase();
         if (database.validateLogin(username, hashedPassword)) {
             String token = generateToken(username);
             return token;
@@ -151,7 +152,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
 
     @Override
     public String logout(String username, String token) throws RemoteException {
-        if (userTokens.containsKey(token)) {        
+        if (userTokens.containsKey(token) && userTokens.get(token).equals(username.toLowerCase())) {
             userTokens.remove(token);
             return "You have logged out";
         }

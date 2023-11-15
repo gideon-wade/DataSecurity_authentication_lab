@@ -23,7 +23,7 @@ public class AuthenticationService {
         Map johnSmithObjects = new HashMap<String, List<String>>();
         List<String> johnSmithPermissions = List.of("read");
         johnSmithObjects.put("config", johnSmithPermissions);
-        this.ACL.put("John Smith", johnSmithObjects);
+        this.ACL.put("john smith", johnSmithObjects);
         
         setPermissionsAlice();
         setPermissionsBob();
