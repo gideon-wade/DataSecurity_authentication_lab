@@ -159,6 +159,6 @@ public class PrintServer extends UnicastRemoteObject implements Service {
         return "You have not logged in yet";
     }
     private void generateAccessControlScenario() {
-
+        
     }
 }

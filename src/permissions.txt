@@ -1,0 +1,8 @@
+admin{print[read, write, delete, execute];queue[read, write, delete, execute];topQueue[read, write, delete, execute];start[read, write, delete, execute];stop[read, write, delete, execute];config[read, write, delete, execute];restart[read, write, delete, execute];status[read, write, delete, execute];readConfig[read, write, delete, execute];setConfig[read, write, delete, execute];login[read, write, delete, execute];logout[read, write, delete, execute]};
+alice{print[read, write, delete, execute];queue[read, write, delete, execute];topQueue[read, write, delete, execute];start[read, write, delete, execute];stop[read, write, delete, execute];config[read, write, delete, execute];restart[read, write, delete, execute];status[read, write, delete, execute];readConfig[read, write, delete, execute];setConfig[read, write, delete, execute];login[read, write, delete, execute];logout[read, write, delete, execute]};
+bob{start[read, write, delete, execute];stop[read, write, delete, execute];restart[read, write, delete, execute];status[read, write, delete, execute];readConfig[read, write, delete, execute];setConfig[read, write, delete, execute]};
+cecilia{queue[read, write, delete, execute];topQueue[read, write, delete, execute];restart[read, write, delete, execute]};
+david{print[read, write, delete, execute];queue[read, write, delete, execute]};
+erica{print[read, write, delete, execute];queue[read, write, delete, execute]};
+fred{print[read, write, delete, execute];queue[read, write, delete, execute]};
+george{print[read, write, delete, execute];queue[read, write, delete, execute]};
