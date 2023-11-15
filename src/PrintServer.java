@@ -154,7 +154,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     public String logout(String username, String token) throws RemoteException {
         if (userTokens.containsKey(token) && userTokens.get(token).equals(username.toLowerCase())) {
             userTokens.remove(token);
-            return "You have logged out";
+            return "User: " + username + " has logged out";
         }
         return "You have not logged in yet";
     }
