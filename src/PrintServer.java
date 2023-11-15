@@ -52,7 +52,10 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     
     @Override
     public void topQueue(String printer, int job, String token) throws IllegalArgumentException {
-        if (userTokens.containsKey(token)) {
+        if (!userTokens.containsKey(token)) {
+            return;
+        }
+        if (authenticationService.authenticate(userTokens.get(token), "topQueue", "execute")) {
             String file = queues.get(printer).remove(job);
             queues.get(printer).add(0, file);
        }
@@ -96,7 +99,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
 
     @Override
     public String status(String printer, String token) throws RemoteException {
-        if (userTokens.containsKey(token)) {
+        if (userTokens.containsKey(token) && authenticationService.authenticate(userTokens.get(token), "status", "execute")) {
             String output = "";
             if (is_running) {
                 output += "Server is running\n";
@@ -114,7 +117,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
         if (!userTokens.containsKey(token)) {
             return "You are not a registered user";
         }
-        System.out.println("authenticating " + userTokens.get(token));
+        System.out. println("authenticating " + userTokens.get(token));
         System.out.println(!authenticationService.authenticate(userTokens.get(token), "config", "read"));
         if (!authenticationService.authenticate(userTokens.get(token), "config", "read")) {
             return "You do not have permission to read the config";
@@ -130,7 +133,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
         if (!authenticationService.authenticate(userTokens.get(token), "config", "write")) {
             return;
         }
-        config.setConfig(parameter, value);
+        config.setConfig(parameter, value); 
     }
     
     @Override
