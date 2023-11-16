@@ -1,0 +1,5 @@
+admin{print[read, write, delete, execute];queue[read, write, delete, execute];topQueue[read, write, delete, execute];start[read, write, delete, execute];stop[read, write, delete, execute];config[read, write, delete, execute];restart[read, write, delete, execute];status[read, write, delete, execute];login[read, write, delete, execute];logout[read, write, delete, execute]};
+janitor -> {start[read, write, delete, execute], stop[read, write, delete, execute], restart[read, write, delete, execute]}
+service_technician -> inspect and modify config
+power_user -> queue, top queue, restart
+default_user -> print, queue

@@ -14,4 +14,5 @@ public interface Service extends Remote {
     public void setConfig(String parameter, String value, String token)throws RemoteException;   // sets the parameter on the print server to value
     public String login(String username, byte[] hashedPassword) throws RemoteException;
     public String logout(String username, String token) throws RemoteException;
+    public void runAsACLSystem(boolean aclSystem) throws RemoteException;
 }
