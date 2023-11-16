@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import Database.DB;
-
 public class PrintServer extends UnicastRemoteObject implements Service {
     private boolean is_running = false;
     private Map<String, List<String>> queues = new HashMap<String, List<String>>();
@@ -160,8 +158,5 @@ public class PrintServer extends UnicastRemoteObject implements Service {
             return "User: " + username + " has logged out";
         }
         return "You have not logged in yet";
-    }
-    private void generateAccessControlScenario() {
-        
     }
 }

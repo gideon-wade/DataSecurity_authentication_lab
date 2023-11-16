@@ -1,6 +1,3 @@
-package Database;
-
-
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HexFormat;
