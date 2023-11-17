@@ -57,6 +57,13 @@ public class User {
             System.err.println("User print failed on user: " + username + " " + exception.getMessage());
         }
     }
+    public void status(String printer, Service Server) {
+        try {
+            System.out.println(Server.status(printer, token));
+        } catch (Exception exception) {
+            System.err.println("User queue failed on user: " + username + " " + exception.getMessage());
+        }
+    }
     public void queue(String printer, Service Server) {
         try {
             System.out.println(Server.queue(printer, token));

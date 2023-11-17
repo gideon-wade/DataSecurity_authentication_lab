@@ -29,6 +29,7 @@ public class Client {
                 bob.setConfig("Bob's awesome configuration", "42", Server);
                 bob.readConfig("Bob's awesome configuration", Server);
                 bob.print("bobsFile", "printer2", Server);
+                bob.status("printer2", Server);
                 bob.logout(Server);
                 System.out.println("Bob success");
                 System.out.println("----- BOB OPERATION -----");

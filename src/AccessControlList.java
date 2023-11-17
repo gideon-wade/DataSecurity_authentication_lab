@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 
-public class AccessControlList {
+public class AccessControlList implements AuthenticationService {
               //Subject     Object  Permissions
               //User        File    Permissions
     private Map<String, Map<String, List<String>>> ACL; 
@@ -67,6 +67,8 @@ public class AccessControlList {
             e.printStackTrace();
         }
     }
+
+    @Override
     public boolean authenticate(String user, String object, String permission) {
         List<String> permissions = getPermissions(user, object);
         if (permissions != null) {
@@ -75,11 +77,17 @@ public class AccessControlList {
         return false;
     }
     
+    @Override
     public void setPermission(String user, String object, String permission) {
         if (!getPermissions(user, object).contains(permission)) getPermissions(user, object).add(permission);
     }
+
+    @Override
+    public void setObject(String user, String object) {
+        if (!getObjects(user).containsKey(object)) getObjects(user).put(object, new ArrayList<String>());
+    }
     
-    public List<String> getPermissions(String user, String object) {
+    private List<String> getPermissions(String user, String object) {
         Map<String, List<String>> objects = getObjects(user);
 
         if (objects != null) {
@@ -88,11 +96,7 @@ public class AccessControlList {
         return null;
     }
 
-    public void setObject(String user, String object) {
-        if (!getObjects(user).containsKey(object)) getObjects(user).put(object, new ArrayList<String>());
-    }
-
-    public Map<String, List<String>> getObjects(String user) {
+    private Map<String, List<String>> getObjects(String user) {
         if (ACL.containsKey(user)) {
             return ACL.get(user);
         }

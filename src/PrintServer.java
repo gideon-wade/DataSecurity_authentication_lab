@@ -12,7 +12,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     private boolean is_running = false;
     private Map<String, List<String>> queues = new HashMap<String, List<String>>();
     private ServerConfig config = new ServerConfig();
-    private AccessControlList accessControlListService;
+    private AuthenticationService authenticationService;
     private RoleBasedSystem roleBasedSystem;
     private DB database = new DB();
     private Map<String, String> userTokens = new HashMap<String, String>();
@@ -21,9 +21,9 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     public PrintServer() throws RemoteException {
         String token = generateToken("admin");
         if (aclSystem) {
-            this.accessControlListService = new AccessControlList();
+            authenticationService = new AccessControlList();
         } else {
-            this.roleBasedSystem = new RoleBasedSystem();
+            authenticationService = new RoleBasedSystem();
         }
         for (int i = 1; i <= 10; i++) {
             queues.put("printer" + i, new ArrayList<>());
@@ -59,21 +59,15 @@ public class PrintServer extends UnicastRemoteObject implements Service {
         if (!userTokens.containsKey(token)) {
             return;
         }
-        if (aclSystem) {
-            if (accessControlListService.authenticate(userTokens.get(token), "topQueue", "execute")) {
-                String file = queues.get(printer).remove(job);
-                queues.get(printer).add(0, file);
-            }
-        } else {
-            //RBS.authenticate(😂😂)
-            //String file = queues.get(printer).remove(job);
-            //queues.get(printer).add(0, file);
+        if (authenticationService.authenticate(userTokens.get(token), "topQueue", "execute")) {
+            String file = queues.get(printer).remove(job);
+            queues.get(printer).add(0, file);
         }
     }
     
     @Override
     public void start(String username) throws RemoteException {
-        if (accessControlListService.authenticate(username, "start", "execute")) {
+        if (authenticationService.authenticate(username, "start", "execute")) {
             try {
                 Registry registry = LocateRegistry.createRegistry(5099);
                 registry.rebind("PrintServer", this);
@@ -87,36 +81,38 @@ public class PrintServer extends UnicastRemoteObject implements Service {
 
     @Override
     public void stop(String username) throws RemoteException{
-        if (accessControlListService.authenticate(username, "stop", "execute")) {
+        if (authenticationService.authenticate(username, "stop", "execute")) {
             for (String printer : queues.keySet()) {
-            queues.get(printer).clear();
-        }
-        try {
-            UnicastRemoteObject.unexportObject(this, true); 
-            System.exit(0);
-        } catch(Exception e) {
-            System.out.println("Error in stopping server: " + e.getMessage());
-        }
-        is_running = false;
+                queues.get(printer).clear();
+            }
+            try {
+                UnicastRemoteObject.unexportObject(this, true); 
+                System.exit(0);
+            } catch(Exception e) {
+                System.out.println("Error in stopping server: " + e.getMessage());
+            }
+            is_running = false;
         }
     }
     
     @Override
-    public void restart() throws RemoteException{
-        stop("admin");
-        start("admin");
+    public void restart(String username) throws RemoteException{
+        if (authenticationService.authenticate(username, "restart", "execute")) {
+            stop("admin");
+            start("admin");
+        }
     }
 
     @Override
     public String status(String printer, String token) throws RemoteException {
-        if (userTokens.containsKey(token) && accessControlListService.authenticate(userTokens.get(token), "status", "execute")) {
+        if (userTokens.containsKey(token) && authenticationService.authenticate(userTokens.get(token), "status", "execute")) {
             String output = "";
             if (is_running) {
                 output += "Server is running\n";
             } else {
                 output += "Server has stopped running\n";
             }
-            output += "The printer" + printer + "has a queue size of " + queues.get(printer).size();
+            output += "The printer: " + printer + " has a queue size of " + queues.get(printer).size();
             return output;
         }
         return "You are not a registered user";
@@ -127,7 +123,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
         if (!userTokens.containsKey(token)) {
             return "You are not a registered user";
         }
-        if (!accessControlListService.authenticate(userTokens.get(token), "config", "read")) {
+        if (!authenticationService.authenticate(userTokens.get(token), "config", "read")) {
             return "You do not have permission to read the config";
         }
         return config.getConfig(parameter);
@@ -138,7 +134,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
         if (!userTokens.containsKey(token)) {
             return;
         }
-        if (!accessControlListService.authenticate(userTokens.get(token), "config", "write")) {
+        if (!authenticationService.authenticate(userTokens.get(token), "config", "write")) {
             return;
         }
         config.setConfig(parameter, value); 
