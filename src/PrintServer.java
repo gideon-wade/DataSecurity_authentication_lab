@@ -17,9 +17,11 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     private DB database = new DB();
     private Map<String, String> userTokens = new HashMap<String, String>();
     private boolean aclSystem = false;
+    private static String serverToken;
+    private PrintServer server;
 
     public PrintServer() throws RemoteException {
-        String token = generateToken("admin");
+        this.serverToken = generateToken("admin");
         if (aclSystem) {
             authenticationService = new AccessControlList();
         } else {
@@ -33,7 +35,7 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     public static void main(String[] args) throws RemoteException {
         try {
             PrintServer server = new PrintServer();
-            server.start("admin");
+            server.start(serverToken);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,14 +43,14 @@ public class PrintServer extends UnicastRemoteObject implements Service {
 
     @Override
     public void print(String filename, String printer, String token) throws RemoteException {
-        if (userTokens.containsKey(token) && queues.containsKey(printer)) {
+        if (userTokens.containsKey(token) && authenticationService.authenticate(userTokens.get(token), "print", "execute") && queues.containsKey(printer)) {
              queues.get(printer).add(filename);
         }
     }
 
     @Override
     public List<String> queue(String printer, String token) throws RemoteException {
-        if (userTokens.containsKey(token)) {
+        if (userTokens.containsKey(token) && authenticationService.authenticate(userTokens.get(token), "queue", "execute")) {
             return queues.get(printer);
        }
         return null;
@@ -66,8 +68,8 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }
     
     @Override
-    public void start(String username) throws RemoteException {
-        if (authenticationService.authenticate(username, "start", "execute")) {
+    public void start(String token) throws RemoteException {
+        if (authenticationService.authenticate(userTokens.get(token), "start", "execute")) {
             try {
                 Registry registry = LocateRegistry.createRegistry(5099);
                 registry.rebind("PrintServer", this);
@@ -80,14 +82,16 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }
 
     @Override
-    public void stop(String username) throws RemoteException{
-        if (authenticationService.authenticate(username, "stop", "execute")) {
+    public void stop(String token) throws RemoteException{
+        if (authenticationService.authenticate(userTokens.get(token), "stop", "execute")) {
             for (String printer : queues.keySet()) {
                 queues.get(printer).clear();
             }
             try {
+                Registry registry = LocateRegistry.getRegistry(5099);
+                registry.unbind("PrintServer");
                 UnicastRemoteObject.unexportObject(this, true); 
-                System.exit(0);
+                System.out.println("server stopped");
             } catch(Exception e) {
                 System.out.println("Error in stopping server: " + e.getMessage());
             }
@@ -96,10 +100,10 @@ public class PrintServer extends UnicastRemoteObject implements Service {
     }
     
     @Override
-    public void restart(String username) throws RemoteException{
-        if (authenticationService.authenticate(username, "restart", "execute")) {
-            stop("admin");
-            start("admin");
+    public void restart(String token) throws RemoteException{
+        if (authenticationService.authenticate(userTokens.get(token), "restart", "execute")) {
+            stop(token);
+            start(token);
         }
     }
 

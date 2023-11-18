@@ -19,6 +19,8 @@ public class Client {
                 alice.login(Server);
                 alice.setConfig("Alice's awesome configuration", "42", Server);
                 alice.readConfig("Alice's awesome configuration", Server);
+                //alice.stop(Server);
+                //alice.start(Server);
                 alice.logout(Server);
                 System.out.println("Alice success");
                 System.out.println("----- ALICE OPERATION -----");

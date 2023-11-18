@@ -1,4 +1,4 @@
-default_user{print[read, write, delete, execute];queue[read, write, delete, execute]}
-power_user:default_user{topQueue[read, write, delete, execute];restart[read, write, delete, execute]}
-admin:power_user{config[read, write, delete, execute];status[read, write, delete, execute];start[read, write, delete, execute];stop[read, write, delete, execute]};
-service_technician:power_user{config[read, write, delete, execute];status[read, write, delete, execute];start[read, write, delete, execute];stop[read, write, delete, execute]}
+default_user{print[execute];queue[execute]}
+power_user:default_user{topQueue[execute];restart[execute]}
+admin:power_user{config[read, write];status[execute];start[execute];stop[execute]};
+service_technician:power_user{config[read, write];status[execute];start[execute];stop[execute]}

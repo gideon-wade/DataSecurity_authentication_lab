@@ -78,4 +78,18 @@ public class User {
             System.err.println("User topQueue failed on user: " + username + " " + exception.getMessage());
         }
     }
+    public void start(Service Server) {
+        try {
+            Server.start(token);
+        } catch (Exception exception) {
+            System.err.println("User start failed on user: " + username + " " + exception.getMessage());
+        }
+    }
+    public void stop(Service Server) {
+        try {
+            Server.stop(token);
+        } catch (Exception exception) {
+            System.err.println("User stop failed on user: " + username + " " + exception.getMessage());
+        }
+    }
 }
