@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Service extends Remote {
     public void print(String filename, String printer, String token) throws RemoteException;   // prints file filename on the specified printer
-    public List<String> queue(String printer, String token) throws RemoteException;   // lists the print queue for a given printer on the user's display in lines of the form <job number>   <file name>
+    public String queue(String printer, String token) throws RemoteException;   // lists the print queue for a given printer on the user's display in lines of the form <job number>   <file name>
     public void topQueue(String printer, int job, String token) throws RemoteException;   // moves job to the top of the queue
     public void start(String username) throws RemoteException;   // starts the print server
     public void stop(String username) throws RemoteException;   // stops the print server

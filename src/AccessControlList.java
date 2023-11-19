@@ -39,8 +39,8 @@ public class AccessControlList implements AuthenticationService {
     }
 
     private void parsePermmisions(String filepath) {
+        System.out.println("PARSING");
         File file = new File(filepath);
-
         try {
             Scanner reader = new Scanner(file);
             while (reader.hasNextLine()) {
@@ -65,6 +65,9 @@ public class AccessControlList implements AuthenticationService {
             reader.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        for(var test : this.ACL.keySet()) {
+            System.out.println(getObjectsToString(test));
         }
     }
 

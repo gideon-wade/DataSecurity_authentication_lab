@@ -1,4 +1,4 @@
-default_user{print[execute];queue[execute]}
-power_user:default_user{topQueue[execute];restart[execute]}
+default_user{print[execute];queue[execute]};
+service_technician{config[read, write];status[execute];start[execute];stop[execute];restart[execute]};
+power_user:default_user{topQueue[execute];restart[execute]};
 admin:power_user{config[read, write];status[execute];start[execute];stop[execute]};
-service_technician:power_user{config[read, write];status[execute];start[execute];stop[execute]}
