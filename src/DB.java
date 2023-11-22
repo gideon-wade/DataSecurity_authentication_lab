@@ -16,6 +16,8 @@ public class DB {
         insertUser("erica", HexFormat.of().parseHex("f82600dcdb1681672861d6c1b054bf47585230c1e083367273ab217f5b686b2b4ffcf02ea46534d25035ccf716eeb8e72c454e0509b8b6b85e1646a2cea3587d")); // ericapassword
         insertUser("fred", HexFormat.of().parseHex("e690d384cdc25284a9502e68f9a930f10c7173657267f5431d2acce3e8dfa87ab762c2a81ed9bb1bddfb955c8144c3205e498680cb3acf4bd314ee76b7792dda")); // fredpassword
         insertUser("george", HexFormat.of().parseHex("d9437ffbf3de39d6f405c4f285f5a3e26d4a8b1e78a3b8a16b0c254523c41111f39e1710e5255e2b7b6921eeae29f66c4c9056a97aa0df8d7bcd2bc504937d1d")); // georgepassword
+        insertUser("henry", HexFormat.of().parseHex("adbfc80d24a963476d7b43a486e5b5009bf0333f80d8f4125e171fe276d1117ed03494b8be9708b68f19d98a4ac5177b962462bb64e7b92e5754b3dc161f0e14")); // henrypassword
+        insertUser("ida", HexFormat.of().parseHex("57e23382848d6ba4a829149e6cd70515e07e0c6fdeb2688ca60a4f35c93f1100cd3652faab4bd769480cee820ba9f7b03fada8c2ccef1f8106790964560a1b05")); // idapassword
     }
     
     public boolean validateLogin(String user, byte[] password) {

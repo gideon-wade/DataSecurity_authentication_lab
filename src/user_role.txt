@@ -1,8 +1,9 @@
 admin{admin}
 alice{admin}
-bob{service_technician}
 cecilia{power_user}
 david{default_user}
 erica{default_user}
 fred{default_user}
-george{default_user}
+george{service_technician}
+henry{default_user}
+ida{power_user}
