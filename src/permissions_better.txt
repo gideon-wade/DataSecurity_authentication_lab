@@ -1,8 +1,0 @@
-admin{print[execute];queue[execute];topQueue[execute];start[execute];stop[execute];config[read, write];restart[execute];status[execute]};
-alice{print[execute];queue[execute];topQueue[execute];start[execute];stop[execute];config[read, write];restart[execute];status[execute]};
-bob{start[execute];stop[execute];restart[execute];status[execute];config[read, write]};
-cecilia{print[execute];queue[execute];topQueue[execute];restart[execute]};
-david{print[execute];queue[execute]};
-erica{print[execute];queue[execute]};
-fred{print[execute];queue[execute]};
-george{print[execute];queue[execute]};

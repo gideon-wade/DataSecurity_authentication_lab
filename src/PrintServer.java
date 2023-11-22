@@ -193,8 +193,4 @@ public class PrintServer extends UnicastRemoteObject implements Service {
             throw new RemoteException("You have not logged in yet");
         }
     }
-    @Override
-    public void runAsACLSystem(boolean aclSystem) {
-        this.aclSystem = aclSystem;
-    }
 }

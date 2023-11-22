@@ -34,7 +34,7 @@ public class AccessControlList implements AuthenticationService {
         // setPermissionErica();
         // setPermissionFred();
         // setPermissionGeorge();
-        parsePermmisions("permissions_better.txt");
+        parsePermmisions("permissions.txt");
 
     }
 
