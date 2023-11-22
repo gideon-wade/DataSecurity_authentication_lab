@@ -18,14 +18,6 @@ public class RoleBasedSystem implements AuthenticationService {
         rolePermissons = new HashMap<String, Map<String, List<String>>>();
         parseUsers("user_role.txt");
         parseRoles("roles.txt");
-        /*userRoleDictionary.put("admin", "admin");
-        userRoleDictionary.put("alice", "admin");
-        userRoleDictionary.put("bob", "janitor");
-        userRoleDictionary.put("cecilia", "power_user");
-        userRoleDictionary.put("david", "default_user");
-        userRoleDictionary.put("erica", "default_user");
-        userRoleDictionary.put("fred", "default_user");
-        userRoleDictionary.put("george", "default_user");*/
     }
 
     private void parseRoles(String filepath) {
@@ -40,7 +32,6 @@ public class RoleBasedSystem implements AuthenticationService {
                 }
                 String role = data.split("\\{")[0]; 
                 String objects = data.split("\\{")[1].split("\\}")[0];
-                //objects=print[read, write, delete, execute];queue[read, write, delete, execute]
                 String[] objectsArray = objects.split(";");
                 Map objectMap = new HashMap<String, List<String>>();
                 for (String object : objectsArray) {

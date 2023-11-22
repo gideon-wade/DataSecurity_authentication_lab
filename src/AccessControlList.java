@@ -26,14 +26,6 @@ public class AccessControlList implements AuthenticationService {
         List<String> johnSmithPermissions = List.of("read");
         johnSmithObjects.put("config", johnSmithPermissions);
         this.ACL.put("john smith", johnSmithObjects);
-        
-        // setPermissionsAlice();
-        // setPermissionsBob();
-        // setPermissionsCecilia();
-        // setPermissionDavid();
-        // setPermissionErica();
-        // setPermissionFred();
-        // setPermissionGeorge();
         parsePermmisions("permissions.txt");
 
     }
